@@ -3,6 +3,7 @@ using RecipeApp.Application.Interfaces;
 using RecipeApp.Application.Services;
 using RecipeApp.Domain.Intefaces;
 using RecipeApp.Infrastructure.Repositories;
+using RecipeApp.Infrastructure.Security;
 
 namespace RecipeApp.Infrastructure;
 
@@ -17,6 +18,9 @@ public static class DependencyInjection
         services.AddScoped<IShopListService, ShopListService>();
         services.AddScoped<IFavoriteService, FavoriteService>();
         services.AddScoped<IIngredientService, IngredientService>();
+
+        // Security
+        services.AddSingleton<PasswordHasher>();
 
         // Registrar Repositorios
         services.AddScoped<IUserRepository, UserRepository>();

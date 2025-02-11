@@ -1,4 +1,5 @@
-﻿using RecipeApp.Domain.Entities;
+﻿using RecipeApp.Application.DTOs.Ingredients;
+using RecipeApp.Domain.Entities;
 
 namespace RecipeApp.Application.Interfaces
 {
@@ -7,6 +8,6 @@ namespace RecipeApp.Application.Interfaces
         Task<PagedResponse<Ingredient>> GetAllIngredientsAsync(int pageNumber, int pageSize);
         Task<Ingredient?> GetIngredientByIdAsync(int id);
         Task AddIngredientAsync(Ingredient ingredient);
-        Task UpdateIngredientAsync(Ingredient ingredient);
+        Task UpdateIngredientAsync(int id, IngredientUpdateDto ingredientDto);
     }
 }

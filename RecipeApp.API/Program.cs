@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using RecipeApp.Infrastructure;
 using RecipeApp.Infrastructure.Data;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,7 +44,12 @@ builder.Services.AddAuthentication(options =>
 // });
 
 builder.Services.AddAuthorization();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+        options.JsonSerializerOptions.WriteIndented = true;
+    });
 
 builder.Services.AddSwaggerGen(options =>
 {

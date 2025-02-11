@@ -1,4 +1,5 @@
-﻿using RecipeApp.Application.Interfaces;
+﻿using RecipeApp.Application.DTOs.Recipe;
+using RecipeApp.Application.Interfaces;
 using RecipeApp.Domain.Entities;
 using RecipeApp.Domain.Intefaces;
 
@@ -8,15 +9,63 @@ public class RecipeService(IRecipeRepository recipeRepository) : IRecipeService
 {
     private readonly IRecipeRepository _recipeRepository = recipeRepository;
 
-    public async Task<PagedResponse<Recipe>> GetAllRecipesAsync(int pageNumber, int pageSize)
+    public async Task<PagedResponse<RecipeDto>> GetAllRecipesAsync(int pageNumber, int pageSize)
     {
         var totalRecords = await _recipeRepository.CountAsync();
         var recipes = await _recipeRepository.GetAllAsync(pageNumber, pageSize);
-        return new PagedResponse<Recipe>(recipes, pageNumber, pageSize, totalRecords);
+
+        var recipeDtos = recipes.Select(r => new RecipeDto
+        {
+            Id = r.Id,
+            Title = r.Title,
+            Description = r.Description,
+            Instructions = r.Instructions,
+            PreparationTime = r.PreparationTime,
+            ImageUrl = r.ImageUrl,
+            RecipeUrl = r.RecipeUrl,
+            Ingredients = r.RecipeIngredients.Select(ri => new RecipeIngredientDto
+            {
+                IngredientId = ri.IngredientId,
+                Ingredient = new IngredientDto
+                {
+                    Id = ri.Ingredient.Id,
+                    Name = ri.Ingredient.Name,
+                    Unit = ri.Ingredient.Unit
+                },
+                Quantity = ri.Quantity
+            }).ToList()
+        }).ToList();
+
+        return new PagedResponse<RecipeDto>(recipeDtos, pageNumber, pageSize, totalRecords);
     }
 
-    public async Task<Recipe?> GetRecipeByIdAsync(int id)
-        => await _recipeRepository.GetByIdAsync(id);
+    public async Task<RecipeDto?> GetRecipeByIdAsync(int id)
+    {
+        var recipe = await _recipeRepository.GetByIdAsync(id);
+        if (recipe == null) return null;
+
+        return new RecipeDto
+        {
+            Id = recipe.Id,
+            Title = recipe.Title,
+            Description = recipe.Description,
+            Instructions = recipe.Instructions,
+            PreparationTime = recipe.PreparationTime,
+            ImageUrl = recipe.ImageUrl,
+            RecipeUrl = recipe.RecipeUrl,
+            Ingredients = recipe.RecipeIngredients.Select(ri => new RecipeIngredientDto
+            {
+                IngredientId = ri.IngredientId,
+                Ingredient = new IngredientDto
+                {
+                    Id = ri.Ingredient.Id,
+                    Name = ri.Ingredient.Name,
+                    Unit = ri.Ingredient.Unit
+                },
+                Quantity = ri.Quantity
+            }).ToList()
+        };
+    }
 
     public async Task<IEnumerable<Recipe>> SearchRecipesByIngredientsAsync(List<int> ingredientIds)
         => await _recipeRepository.SearchByIngredientsAsync(ingredientIds);

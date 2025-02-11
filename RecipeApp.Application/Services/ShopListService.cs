@@ -1,4 +1,6 @@
-﻿using RecipeApp.Application.Interfaces;
+﻿using RecipeApp.Application.DTOs;
+using RecipeApp.Application.DTOs.ShopList;
+using RecipeApp.Application.Interfaces;
 using RecipeApp.Domain.Entities;
 using RecipeApp.Domain.Intefaces;
 
@@ -8,8 +10,21 @@ public class ShopListService(IShopListRepository shopListRepository) : IShopList
 {
     private readonly IShopListRepository _shopListRepository = shopListRepository;
 
-    public async Task<IEnumerable<ShopList>> GetUserShopListAsync(int userId)
-        => await _shopListRepository.GetByUserIdAsync(userId);
+    public async Task<IEnumerable<ShopListDto>> GetUserShopListAsync(int userId)
+    {
+        var shopList = await _shopListRepository.GetByUserIdAsync(userId);
+        return shopList.Select(s => new ShopListDto
+        {
+            Id = s.Id,
+            UserId = s.UserId,
+            Ingredient = new IngredientDto
+            {
+                Id = s.Ingredient.Id,
+                Name = s.Ingredient.Name,
+                Unit = s.Ingredient.Unit
+            },
+        }).ToList();
+    }
 
     public async Task AddIngredientToShopListAsync(int userId, int ingredientId)
     {

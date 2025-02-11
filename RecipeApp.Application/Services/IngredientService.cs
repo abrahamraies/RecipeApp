@@ -1,4 +1,5 @@
-﻿using RecipeApp.Application.Interfaces;
+﻿using RecipeApp.Application.DTOs.Ingredients;
+using RecipeApp.Application.Interfaces;
 using RecipeApp.Domain.Entities;
 using RecipeApp.Domain.Intefaces;
 
@@ -28,13 +29,17 @@ public class IngredientService(IIngredientRepository ingredientRepository) : IIn
         await _ingredientRepository.AddAsync(ingredient);
     }
 
-    public async Task UpdateIngredientAsync(Ingredient ingredient)
+    public async Task UpdateIngredientAsync(int id, IngredientUpdateDto ingredientDto)
     {
-        var existingIngredient = await _ingredientRepository.GetByIdAsync(ingredient.Id);
+        var existingIngredient = await _ingredientRepository.GetByIdAsync(id);
         if (existingIngredient == null)
         {
             throw new InvalidOperationException("Ingredient not found.");
         }
-        await _ingredientRepository.UpdateAsync(ingredient);
+
+        existingIngredient.Name = ingredientDto.Name ?? existingIngredient.Name;
+        existingIngredient.Unit = ingredientDto.Unit ?? existingIngredient.Unit;
+
+        await _ingredientRepository.UpdateAsync(existingIngredient);
     }
 }

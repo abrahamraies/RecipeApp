@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RecipeApp.Application.DTOs.Ingredients;
 using RecipeApp.Application.Interfaces;
 using RecipeApp.Domain.Entities;
 
@@ -34,13 +35,9 @@ public class IngredientsController(IIngredientService ingredientService) : Contr
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateIngredient(int id, Ingredient ingredient)
+    public async Task<IActionResult> UpdateIngredient(int id, [FromBody] IngredientUpdateDto ingredientDto)
     {
-        if (id != ingredient.Id)
-        {
-            return BadRequest("ID mismatch");
-        }
-        await _ingredientService.UpdateIngredientAsync(ingredient);
+        await _ingredientService.UpdateIngredientAsync(id, ingredientDto);
         return NoContent();
     }
 }

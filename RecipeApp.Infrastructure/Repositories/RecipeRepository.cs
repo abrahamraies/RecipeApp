@@ -32,7 +32,13 @@ public class RecipeRepository(AppDbContext context) : IRecipeRepository
         return await _context.Recipes
             .Include(r => r.RecipeIngredients)
             .ThenInclude(ri => ri.Ingredient)
-            .Where(r => r.RecipeIngredients.Any(ri => ingredientIds.Contains(ri.IngredientId)))
+            .Where(r => r.RecipeIngredients
+                .Join(
+                    ingredientIds,
+                    ri => ri.IngredientId,
+                    id => id,
+                    (ri, id) => ri
+                ).Any())
             .ToListAsync();
     }
 
