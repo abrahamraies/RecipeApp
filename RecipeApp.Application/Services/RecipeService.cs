@@ -1,6 +1,5 @@
 ﻿using RecipeApp.Application.DTOs.Recipe;
 using RecipeApp.Application.Interfaces;
-using RecipeApp.Domain.Entities;
 using RecipeApp.Domain.Intefaces;
 
 namespace RecipeApp.Application.Services;
@@ -67,6 +66,18 @@ public class RecipeService(IRecipeRepository recipeRepository) : IRecipeService
         };
     }
 
-    public async Task<IEnumerable<Recipe>> SearchRecipesByIngredientsAsync(List<int> ingredientIds)
-        => await _recipeRepository.SearchByIngredientsAsync(ingredientIds);
+    public async Task<IEnumerable<RecipeResponse>> SearchRecipesByIngredientsAsync(List<int> ingredientIds)
+    {
+        // Buscar recetas que contengan todos los ingredientes seleccionados
+        var recipes = await _recipeRepository.GetRecipesWithIngredientsAsync(ingredientIds);
+
+        return recipes.Select(r => new RecipeResponse
+        {
+            Id = r.Id,
+            Title = r.Title,
+            Description = r.Description,
+            ImageUrl = r.ImageUrl,
+            RecipeUrl = r.RecipeUrl
+        }).ToList();
+    }
 }

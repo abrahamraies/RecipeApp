@@ -8,4 +8,5 @@ public interface IFavoriteService
     Task<IEnumerable<FavoriteDto>> GetUserFavoritesAsync(int userId);
     Task AddFavoriteAsync(int userId, int recipeId);
     Task RemoveFavoriteAsync(int favoriteId);
+    Task<bool> IsFavoriteAsync(int userId, int recipeId);
 }

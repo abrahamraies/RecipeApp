@@ -22,6 +22,11 @@ namespace RecipeApp.Domain.Entities
         [MaxLength(100)]
         public string? GoogleId { get; set; } // Para usuarios que se registran con Google
 
+        // Para enviar un correo de verificacion, y para resetear la contraseña.
+        public string? VerificationToken { get; set; }
+        public DateTime? VerificationTokenExpires { get; set; }
+        public bool IsEmailVerified { get; set; } = false;
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 

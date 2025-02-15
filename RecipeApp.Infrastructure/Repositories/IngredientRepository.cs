@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RecipeApp.Application.DTOs.Ingredients;
 using RecipeApp.Domain.Entities;
 using RecipeApp.Domain.Intefaces;
 using RecipeApp.Infrastructure.Data;
@@ -38,5 +39,21 @@ public class IngredientRepository(AppDbContext context) : IIngredientRepository
     {
         _context.Ingredients.Update(ingredient);
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<Ingredient>> SearchIngredientsAsync(string query)
+    {
+        return await _context.Ingredients
+            .Where(i => i.Name.Contains(query, StringComparison.OrdinalIgnoreCase))
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<string>> AutocompleteAsync(string query)
+    {
+        return await _context.Ingredients
+            .Where(i => i.Name.Contains(query, StringComparison.OrdinalIgnoreCase))
+            .Select(i => i.Name)
+            .Take(10)
+            .ToListAsync();
     }
 }

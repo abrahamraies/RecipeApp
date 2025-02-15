@@ -27,18 +27,19 @@ public class RecipeRepository(AppDbContext context) : IRecipeRepository
     public async Task<Recipe?> GetByIdAsync(int id)
         => await _context.Recipes.Include(r => r.RecipeIngredients).ThenInclude(ri => ri.Ingredient).FirstOrDefaultAsync(r => r.Id == id);
 
-    public async Task<IEnumerable<Recipe>> SearchByIngredientsAsync(List<int> ingredientIds)
+    public async Task<IEnumerable<Recipe>> GetRecipesWithIngredientsAsync(List<int> ingredientIds)
     {
+        int ingredientCount = ingredientIds.Count;
+
+        var recipeIds = await _context.RecipeIngredient
+        .Where(ri => ingredientIds.Contains(ri.IngredientId))
+        .GroupBy(ri => ri.RecipeId)
+        .Where(g => g.Select(ri => ri.IngredientId).Distinct().Count() == ingredientCount)
+        .Select(g => g.Key)
+        .ToListAsync();
+
         return await _context.Recipes
-            .Include(r => r.RecipeIngredients)
-            .ThenInclude(ri => ri.Ingredient)
-            .Where(r => r.RecipeIngredients
-                .Join(
-                    ingredientIds,
-                    ri => ri.IngredientId,
-                    id => id,
-                    (ri, id) => ri
-                ).Any())
+            .Where(r => recipeIds.Contains(r.Id))
             .ToListAsync();
     }
 

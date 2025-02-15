@@ -7,7 +7,7 @@ namespace RecipeApp.Domain.Intefaces
         Task<int> CountAsync();
         Task<IEnumerable<Recipe>> GetAllAsync(int pageNumber, int pageSize);
         Task<Recipe?> GetByIdAsync(int id);
-        Task<IEnumerable<Recipe>> SearchByIngredientsAsync(List<int> ingredientIds);
+        Task<IEnumerable<Recipe>> GetRecipesWithIngredientsAsync(List<int> ingredientIds);
         Task AddAsync(Recipe recipe);
     }
 }

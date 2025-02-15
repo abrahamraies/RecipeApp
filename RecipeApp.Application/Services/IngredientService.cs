@@ -42,4 +42,18 @@ public class IngredientService(IIngredientRepository ingredientRepository) : IIn
 
         await _ingredientRepository.UpdateAsync(existingIngredient);
     }
+
+    public async Task<List<IngredientResponse>> SearchIngredients(string query)
+    {
+        var ingredients = await _ingredientRepository.SearchIngredientsAsync(query);
+
+        return ingredients.Select(i => new IngredientResponse
+        {
+            Id = i.Id,
+            Name = i.Name
+        }).ToList();
+    }
+
+    public async Task<IEnumerable<string>> AutocompleteAsync(string query)
+        => await _ingredientRepository.AutocompleteAsync(query);
 }

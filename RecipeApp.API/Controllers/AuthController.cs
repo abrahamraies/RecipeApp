@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using RecipeApp.API.Models.Login;
+﻿using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Mvc;
 using RecipeApp.Application.Interfaces;
+using RecipeApp.Application.Services;
 using RecipeApp.Domain.Entities;
 
 namespace RecipeApp.API.Controllers

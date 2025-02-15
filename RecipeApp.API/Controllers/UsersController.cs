@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Mvc;
 using RecipeApp.Application.DTOs.User;
 using RecipeApp.Application.Interfaces;
 using RecipeApp.Infrastructure.Security;
@@ -7,16 +8,10 @@ namespace RecipeApp.Api.Controllers;
 
 [ApiController]
 [Route("api/users")]
-public class UsersController : ControllerBase
+public class UsersController(IUserService userService, PasswordHasher passwordHasher) : ControllerBase
 {
-    private readonly IUserService _userService;
-    private readonly PasswordHasher _passwordHasher;
-
-    public UsersController(IUserService userService, PasswordHasher passwordHasher)
-    {
-        _userService = userService;
-        _passwordHasher = passwordHasher;
-    }
+    private readonly IUserService _userService = userService;
+    private readonly PasswordHasher _passwordHasher = passwordHasher;
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUser(int id)
@@ -69,5 +64,36 @@ public class UsersController : ControllerBase
 
         await _userService.UpdateUserAsync(user);
         return NoContent();
+    }
+
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
+    {
+        var user = await _userService.GetUserByEmailAsync(request.Email);
+        if (user == null) return NotFound("User not found");
+
+        var token = Guid.NewGuid().ToString();
+        user.VerificationToken = token;
+        user.VerificationTokenExpires = DateTime.UtcNow.AddHours(1); // Token válido por 1 hora
+        await _userService.UpdateUserAsync(user);
+
+        var resetLink = $"https://yourfrontend.com/reset-password?token={token}";
+        await _emailService.SendEmailAsync(user.Email, "Password Reset", $"Click here to reset your password: {resetLink}");
+
+        return Ok("Password reset email sent");
+    }
+
+    [HttpGet("verify-email")]
+    public async Task<IActionResult> VerifyEmail([FromQuery] string token)
+    {
+        var user = await _userService.GetUserByVerificationTokenAsync(token);
+        if (user == null || user.VerificationTokenExpires < DateTime.UtcNow) return BadRequest("Invalid or expired token");
+
+        user.IsEmailVerified = true;
+        user.VerificationToken = null;
+        user.VerificationTokenExpires = null;
+        await _userService.UpdateUserAsync(user);
+
+        return Ok("Email verified successfully");
     }
 }

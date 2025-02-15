@@ -36,4 +36,7 @@ public class FavoriteService(IFavoriteRepository favoriteRepository) : IFavorite
 
     public async Task RemoveFavoriteAsync(int favoriteId)
         => await _favoriteRepository.RemoveAsync(favoriteId);
+
+    public async Task<bool> IsFavoriteAsync(int userId, int recipeId)
+        => await _favoriteRepository.IsFavoriteAsync(userId, recipeId);
 }

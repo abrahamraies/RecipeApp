@@ -8,4 +8,5 @@ public interface IUserService
     Task<User?> GetUserByEmailAsync(string email);
     Task RegisterUserAsync(User user);
     Task UpdateUserAsync(User user);
+    Task<User?> GetUserByVerificationTokenAsync(string token);
 }

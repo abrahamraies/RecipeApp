@@ -8,5 +8,6 @@ namespace RecipeApp.Domain.Intefaces
         Task<User?> GetByEmailAsync(string email);
         Task AddAsync(User user);
         Task UpdateAsync(User user);
+        Task<User?> GetUserByVerificationTokenAsync(string token);
     }
 }

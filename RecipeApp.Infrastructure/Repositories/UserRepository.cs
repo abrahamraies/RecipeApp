@@ -17,13 +17,28 @@ public class UserRepository(AppDbContext context) : IUserRepository
 
     public async Task AddAsync(User user)
     {
+        user.VerificationToken = Guid.NewGuid().ToString();
+        user.VerificationTokenExpires = DateTime.UtcNow.AddHours(24);
+        user.IsEmailVerified = false;
+
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
+
+        var verificationLink = $"https://yourfrontend.com/verify-email?token={user.VerificationToken}";
+        await _emailService.SendEmailAsync(user.Email, "Verify Your Email", $"Click here to verify your email: {verificationLink}");
     }
 
     public async Task UpdateAsync(User user)
     {
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<User?> GetUserByVerificationTokenAsync(string token)
+    {
+        return await _context.Users
+            .FirstOrDefaultAsync(u => u.VerificationToken == token &&
+                                      (!u.VerificationTokenExpires.HasValue ||
+                                       u.VerificationTokenExpires > DateTime.UtcNow));
     }
 }

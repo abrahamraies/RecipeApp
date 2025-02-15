@@ -15,7 +15,8 @@ var key = Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? throw new ArgumentNullExc
 builder.Services.AddInfrastructure();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
-        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))));
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection")),
+        options => options.TranslateParameterizedCollectionsToConstants()));
 
 builder.Services.AddAuthentication(options =>
 {
@@ -44,12 +45,7 @@ builder.Services.AddAuthentication(options =>
 // });
 
 builder.Services.AddAuthorization();
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-        options.JsonSerializerOptions.WriteIndented = true;
-    });
+builder.Services.AddControllers();
 
 builder.Services.AddSwaggerGen(options =>
 {

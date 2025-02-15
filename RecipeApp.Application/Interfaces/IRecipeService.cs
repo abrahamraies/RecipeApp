@@ -7,5 +7,5 @@ public interface IRecipeService
 {
     Task<PagedResponse<RecipeDto>> GetAllRecipesAsync(int pageNumber, int pageSize);
     Task<RecipeDto?> GetRecipeByIdAsync(int id);
-    Task<IEnumerable<Recipe>> SearchRecipesByIngredientsAsync(List<int> ingredientIds);
+    Task<IEnumerable<RecipeResponse>> SearchRecipesByIngredientsAsync(List<int> ingredientIds);
 }

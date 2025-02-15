@@ -27,4 +27,10 @@ public class FavoriteRepository(AppDbContext context) : IFavoriteRepository
             await _context.SaveChangesAsync();
         }
     }
+
+    public async Task<bool> IsFavoriteAsync(int userId, int recipeId)
+    {
+        return await _context.Favorites
+            .AnyAsync(f => f.UserId == userId && f.RecipeId == recipeId);
+    }
 }

@@ -10,5 +10,7 @@ namespace RecipeApp.Domain.Intefaces
         Task<Ingredient?> GetByNameAsync(string name);
         Task AddAsync(Ingredient ingredient);
         Task UpdateAsync(Ingredient ingredient);
+        Task<IEnumerable<Ingredient>> SearchIngredientsAsync(string query);
+        Task<IEnumerable<string>> AutocompleteAsync(string query);
     }
 }

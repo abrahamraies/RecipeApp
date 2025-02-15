@@ -32,4 +32,11 @@ public class FavoritesController(IFavoriteService favoriteService) : ControllerB
         await _favoriteService.RemoveFavoriteAsync(favoriteId);
         return Ok("Favorite removed");
     }
+
+    [HttpGet("check")]
+    public async Task<IActionResult> CheckFavorite([FromQuery] int userId, [FromQuery] int recipeId)
+    {
+        var isFavorite = await _favoriteService.IsFavoriteAsync(userId, recipeId);
+        return Ok(new { IsFavorite = isFavorite });
+    }
 }

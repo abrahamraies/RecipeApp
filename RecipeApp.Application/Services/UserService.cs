@@ -33,4 +33,7 @@ public class UserService(IUserRepository userRepository) : IUserService
         }
         await _userRepository.UpdateAsync(user);
     }
+
+    public async Task<User?> GetUserByVerificationTokenAsync(string token)
+        => await _userRepository.GetUserByVerificationTokenAsync(token);
 }
