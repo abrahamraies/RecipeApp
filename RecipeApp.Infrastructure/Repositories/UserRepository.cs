@@ -23,9 +23,6 @@ public class UserRepository(AppDbContext context) : IUserRepository
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
-
-        var verificationLink = $"https://yourfrontend.com/verify-email?token={user.VerificationToken}";
-        await _emailService.SendEmailAsync(user.Email, "Verify Your Email", $"Click here to verify your email: {verificationLink}");
     }
 
     public async Task UpdateAsync(User user)

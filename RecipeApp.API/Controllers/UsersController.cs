@@ -8,10 +8,11 @@ namespace RecipeApp.Api.Controllers;
 
 [ApiController]
 [Route("api/users")]
-public class UsersController(IUserService userService, PasswordHasher passwordHasher) : ControllerBase
+public class UsersController(IUserService userService, PasswordHasher passwordHasher, IEmailService emailService) : ControllerBase
 {
     private readonly IUserService _userService = userService;
     private readonly PasswordHasher _passwordHasher = passwordHasher;
+    private readonly IEmailService _emailService = emailService;
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUser(int id)

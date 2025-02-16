@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using RecipeApp.Application.Interfaces;
 using RecipeApp.Application.Services;
 using RecipeApp.Domain.Intefaces;
@@ -18,6 +19,9 @@ public static class DependencyInjection
         services.AddScoped<IShopListService, ShopListService>();
         services.AddScoped<IFavoriteService, FavoriteService>();
         services.AddScoped<IIngredientService, IngredientService>();
+
+        services.AddScoped<IEmailService, EmailService>();
+        services.AddSingleton<IMemoryCache, MemoryCache>();
 
         // Security
         services.AddSingleton<PasswordHasher>();

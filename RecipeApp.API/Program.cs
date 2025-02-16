@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using RecipeApp.Application;
 using RecipeApp.Infrastructure;
 using RecipeApp.Infrastructure.Data;
 using System.Text;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +16,12 @@ builder.Services.AddInfrastructure();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection")),
-        options => options.TranslateParameterizedCollectionsToConstants()));
+        options =>
+        {
+            options.TranslateParameterizedCollectionsToConstants();
+            options.EnableStringComparisonTranslations();
+        }
+    ));
 
 builder.Services.AddAuthentication(options =>
 {
@@ -88,6 +93,8 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+
+builder.Services.Configure<SendGridSettings>(builder.Configuration.GetSection("SendGrid"));
 
 builder.Services.AddCors(options =>
 {

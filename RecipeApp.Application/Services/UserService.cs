@@ -4,10 +4,10 @@ using RecipeApp.Domain.Intefaces;
 
 namespace RecipeApp.Application.Services;
 
-public class UserService(IUserRepository userRepository) : IUserService
+public class UserService(IUserRepository userRepository, IEmailService emailService) : IUserService
 {
     private readonly IUserRepository _userRepository = userRepository;
-
+    private readonly IEmailService _emailService = emailService;
     public async Task<User?> GetUserByIdAsync(int id)
         => await _userRepository.GetByIdAsync(id);
 
@@ -22,6 +22,9 @@ public class UserService(IUserRepository userRepository) : IUserService
             throw new InvalidOperationException("User with this email already exists.");
         }
         await _userRepository.AddAsync(user);
+
+        var verificationLink = $"https://localhost:7253/api/users/verify-email?token={user.VerificationToken}";
+        await _emailService.SendEmailAsync(user.Email, "Verify Your Email", $"Click here to verify your email: {verificationLink}");
     }
 
     public async Task UpdateUserAsync(User user)
