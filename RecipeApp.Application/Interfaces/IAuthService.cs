@@ -1,8 +1,10 @@
-﻿namespace RecipeApp.Application.Interfaces
+﻿using RecipeApp.Domain.Entities;
+
+namespace RecipeApp.Application.Interfaces
 {
     public interface IAuthService
     {
-        Task<string?> AuthenticateAsync(string email, string password);
+        Task<(string? Token, User? User)> AuthenticateAsync(string email, string password);
         string HashPassword(string password);
     }
 }

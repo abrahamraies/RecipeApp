@@ -14,15 +14,17 @@ namespace RecipeApp.Application.Services
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IConfiguration _configuration = configuration;
 
-        public async Task<string?> AuthenticateAsync(string email, string password)
+        public async Task<(string? Token, User? User)> AuthenticateAsync(string email, string password)
         {
             var user = await _userRepository.GetByEmailAsync(email);
             if (user == null || !VerifyPassword(password, user.PasswordHash))
             {
-                return null; // Credenciales inválidas
+                return (null, null); // Credenciales inválidas
             }
 
-            return GenerateJwtToken(user);
+            var token = GenerateJwtToken(user);
+
+            return (token, user);
         }
 
         private string GenerateJwtToken(User user)

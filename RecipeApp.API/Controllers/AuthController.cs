@@ -30,13 +30,22 @@ namespace RecipeApp.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            var token = await _authService.AuthenticateAsync(request.Email, request.Password);
-            if (token == null)
+            var result = await _authService.AuthenticateAsync(request.Email, request.Password);
+            if (result.Token == null || result.User == null)
             {
                 return Unauthorized("Invalid credentials");
             }
 
-            return Ok(new { Token = token });
+            return Ok(new
+            {
+                result.Token,
+                User = new
+                {
+                    result.User.Id,
+                    result.User.Name,
+                    result.User.Email
+                }
+            });
         }
 
         [HttpPost("forgot-password")]
