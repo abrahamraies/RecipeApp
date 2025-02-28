@@ -18,9 +18,9 @@ public class FavoriteRepository(AppDbContext context) : IFavoriteRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task RemoveAsync(int favoriteId)
+    public async Task RemoveAsync(int userId, int recipeId)
     {
-        var favorite = await _context.Favorites.FindAsync(favoriteId);
+        var favorite = await _context.Favorites.FirstOrDefaultAsync(f => f.UserId == userId && f.RecipeId == recipeId);
         if (favorite != null)
         {
             _context.Favorites.Remove(favorite);
