@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using RecipeApp.Application;
+using RecipeApp.Application.Settings;
 using RecipeApp.Infrastructure;
 using RecipeApp.Infrastructure.Data;
 using System.Text;
@@ -95,6 +95,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.Configure<SendGridSettings>(builder.Configuration.GetSection("SendGrid"));
+builder.Services.Configure<AppSettings>(builder.Configuration);
 
 builder.Services.AddCors(options =>
 {

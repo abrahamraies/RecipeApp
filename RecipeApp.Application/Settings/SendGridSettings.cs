@@ -1,4 +1,4 @@
-﻿namespace RecipeApp.Application
+﻿namespace RecipeApp.Application.Settings
 {
     public class SendGridSettings
     {

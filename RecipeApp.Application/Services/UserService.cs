@@ -1,13 +1,16 @@
-﻿using RecipeApp.Application.Interfaces;
+﻿using Microsoft.Extensions.Options;
+using RecipeApp.Application.Interfaces;
+using RecipeApp.Application.Settings;
 using RecipeApp.Domain.Entities;
 using RecipeApp.Domain.Intefaces;
 
 namespace RecipeApp.Application.Services;
 
-public class UserService(IUserRepository userRepository, IEmailService emailService) : IUserService
+public class UserService(IUserRepository userRepository, IEmailService emailService, IOptions<AppSettings> appSettings) : IUserService
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IEmailService _emailService = emailService;
+    private readonly string _backendBaseUrl = appSettings.Value.BackendBaseUrl;
     public async Task<User?> GetUserByIdAsync(int id)
         => await _userRepository.GetByIdAsync(id);
 
@@ -23,7 +26,7 @@ public class UserService(IUserRepository userRepository, IEmailService emailServ
         }
         await _userRepository.AddAsync(user);
 
-        var verificationLink = $"https://localhost:7253/api/users/verify-email?token={user.VerificationToken}";
+        var verificationLink = $"{_backendBaseUrl}/api/users/verify-email?token={user.VerificationToken}";
         await _emailService.SendEmailAsync(user.Email, "Verify Your Email", $"Click here to verify your email: {verificationLink}");
     }
 

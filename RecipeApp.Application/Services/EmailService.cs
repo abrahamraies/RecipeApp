@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using RecipeApp.Application.Interfaces;
+using RecipeApp.Application.Settings;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
