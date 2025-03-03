@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RecipeApp.API.Models.ShopList;
 using RecipeApp.Application.Interfaces;
 
@@ -10,6 +11,7 @@ public class ShopListController(IShopListService shopListService) : ControllerBa
 {
     private readonly IShopListService _shopListService = shopListService;
 
+    [Authorize]
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetShopList(int userId)
     {
@@ -17,6 +19,7 @@ public class ShopListController(IShopListService shopListService) : ControllerBa
         return Ok(shopList);
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> AddToShopList([FromBody] ShopListRequest request)
     {
@@ -24,6 +27,7 @@ public class ShopListController(IShopListService shopListService) : ControllerBa
         return Ok("Item added to shop list");
     }
 
+    [Authorize]
     [HttpDelete("{itemId}")]
     public async Task<IActionResult> RemoveFromShopList(int itemId)
     {

@@ -11,7 +11,7 @@ public class FavoritesController(IFavoriteService favoriteService) : ControllerB
 {
     private readonly IFavoriteService _favoriteService = favoriteService;
 
-    //[Authorize]
+    [Authorize]
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetFavorites(int userId)
     {
@@ -19,6 +19,7 @@ public class FavoritesController(IFavoriteService favoriteService) : ControllerB
         return Ok(favorites);
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> AddFavorite([FromBody] FavoriteRequest request)
     {
@@ -27,6 +28,7 @@ public class FavoritesController(IFavoriteService favoriteService) : ControllerB
         return Ok(updatedFavorites);
     }
 
+    [Authorize]
     [HttpDelete]
     public async Task<IActionResult> RemoveFavorite([FromQuery] int userId, [FromQuery] int recipeId)
     {
@@ -35,6 +37,7 @@ public class FavoritesController(IFavoriteService favoriteService) : ControllerB
         return Ok(updatedFavorites);
     }
 
+    [Authorize]
     [HttpGet("check")]
     public async Task<IActionResult> CheckFavorite([FromQuery] int userId, [FromQuery] int recipeId)
     {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RecipeApp.Application.DTOs.User;
 using RecipeApp.Application.Interfaces;
 using RecipeApp.Infrastructure.Security;
@@ -22,6 +23,7 @@ public class UsersController(IUserService userService, PasswordHasher passwordHa
         return Ok(user);
     }
 
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDto userDto)
     {
@@ -35,6 +37,7 @@ public class UsersController(IUserService userService, PasswordHasher passwordHa
         return NoContent();
     }
 
+    [Authorize]
     [HttpPut("{id}/email")]
     public async Task<IActionResult> UpdateEmail(int id, [FromBody] UpdateEmailDto emailDto)
     {
@@ -48,6 +51,7 @@ public class UsersController(IUserService userService, PasswordHasher passwordHa
         return NoContent();
     }
 
+    [Authorize]
     [HttpPut("{id}/password")]
     public async Task<IActionResult> UpdatePassword(int id, [FromBody] UpdatePasswordDto passwordDto)
     {
