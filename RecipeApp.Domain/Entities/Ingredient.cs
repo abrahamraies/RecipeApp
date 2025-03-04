@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RecipeApp.Domain.Entities
 {
+    [Table("ingredients")]
     public class Ingredient
     {
         public int Id { get; set; }
