@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:9.0
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: recipes_db
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    ports:
+      - "3307:3306"
+
+  backend:
+    build:
+      context: ./recipes-backend
+      dockerfile: Dockerfile
+    container_name: backend_api
+    environment:
+      - ConnectionStrings__DefaultConnection=${ConnectionStrings__DefaultConnection}
+      - JwtSettings__Key=${JwtSettings__Key}
+      - JwtSettings__Issuer=${JwtSettings__Issuer}
+      - JwtSettings__Audience=${JwtSettings__Audience}
+      - JwtSettings__ExpirationMinutes=3600
+      - SendGrid__ApiKey=${SendGrid__ApiKey}
+      - SendGrid__FromEmail=${SendGrid__FromEmail}
+      - SendGrid__FromName=Recetas App
+      - BackendBaseUrl=${BackendBaseUrl}
+    ports:
+      - "7253:80"
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./recipes-app/recipe-app
+      dockerfile: Dockerfile
+    container_name: frontend_app
+    environment:
+      - VITE_APP_BACKEND_URL=${VITE_APP_BACKEND_URL}
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
