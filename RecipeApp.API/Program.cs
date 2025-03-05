@@ -13,14 +13,17 @@ var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? throw new ArgumentNullException("JwtSettings:Key"));
 
 builder.Services.AddInfrastructure();
+
+var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
+    ?? throw new InvalidOperationException("La cadena de conexión no está configurada.");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
-        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection")),
+    options.UseMySql(connectionString,
+        ServerVersion.AutoDetect(connectionString),
         options =>
-        {
-            options.TranslateParameterizedCollectionsToConstants();
-            options.EnableStringComparisonTranslations();
-        }
+            {
+                options.TranslateParameterizedCollectionsToConstants();
+                options.EnableStringComparisonTranslations();
+            }
     ));
 
 
