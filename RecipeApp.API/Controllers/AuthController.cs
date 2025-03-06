@@ -1,18 +1,21 @@
 ﻿using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using RecipeApp.Application.Interfaces;
 using RecipeApp.Application.Services;
+using RecipeApp.Application.Settings;
 using RecipeApp.Domain.Entities;
 
 namespace RecipeApp.API.Controllers
 {
     [Route("api/auth")]
     [ApiController]
-    public class AuthController(IUserService userService, IAuthService authService, IEmailService emailService) : ControllerBase
+    public class AuthController(IUserService userService, IAuthService authService, IEmailService emailService, IOptions<AppSettings> appSettings) : ControllerBase
     {
         private readonly IUserService _userService = userService;
         private readonly IAuthService _authService = authService;
         private readonly IEmailService _emailService = emailService;
+        private readonly string _frontendUrl = appSettings.Value.FrontendUrl;
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] User user)
@@ -59,7 +62,7 @@ namespace RecipeApp.API.Controllers
             user.VerificationTokenExpires = DateTime.UtcNow.AddHours(1); // Token válido por 1 hora
             await _userService.UpdateUserAsync(user);
 
-            var resetLink = $"https://recipes-app01.netlify.app/reset-password?token={token}";
+            var resetLink = $"{_frontendUrl}/reset-password?token={token}";
             await _emailService.SendEmailAsync(user.Email, "Password Reset", $"Click here to reset your password: {resetLink}");
 
             return Ok("Password reset email sent");
@@ -68,8 +71,14 @@ namespace RecipeApp.API.Controllers
         [HttpGet("verify-email")]
         public async Task<IActionResult> VerifyEmail([FromQuery] string token)
         {
+            if (string.IsNullOrEmpty(token))
+            {
+                return BadRequest("Token is required");
+            }
+
             var user = await _userService.GetUserByVerificationTokenAsync(token);
-            if (user == null || user.VerificationTokenExpires < DateTime.UtcNow) return BadRequest("Invalid or expired token");
+            if (user == null || user.VerificationTokenExpires < DateTime.UtcNow)
+                return BadRequest("Invalid or expired token");
 
             user.IsEmailVerified = true;
             user.VerificationToken = null;

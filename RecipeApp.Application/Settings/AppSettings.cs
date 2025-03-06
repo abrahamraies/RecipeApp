@@ -2,5 +2,5 @@
 
 public class AppSettings
 {
-    public string BackendBaseUrl { get; set; } = null!;
+    public string FrontendUrl { get; set; } = null!;
 }

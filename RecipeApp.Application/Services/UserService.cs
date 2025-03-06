@@ -10,7 +10,7 @@ public class UserService(IUserRepository userRepository, IEmailService emailServ
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IEmailService _emailService = emailService;
-    private readonly string _backendBaseUrl = appSettings.Value.BackendBaseUrl;
+    private readonly string _frontendUrl = appSettings.Value.FrontendUrl;
     public async Task<User?> GetUserByIdAsync(int id)
         => await _userRepository.GetByIdAsync(id);
 
@@ -26,7 +26,7 @@ public class UserService(IUserRepository userRepository, IEmailService emailServ
         }
         await _userRepository.AddAsync(user);
 
-        var verificationLink = $"{_backendBaseUrl}/api/users/verify-email?token={user.VerificationToken}";
+        var verificationLink = $"{_frontendUrl}/api/auth/verify-email?token={user.VerificationToken}";
         await _emailService.SendEmailAsync(user.Email, "Verify Your Email", $"Click here to verify your email: {verificationLink}");
     }
 
