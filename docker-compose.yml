@@ -15,7 +15,7 @@ services:
       - SendGrid__ApiKey=${SendGrid__ApiKey}
       - SendGrid__FromEmail=${SendGrid__FromEmail}
       - SendGrid__FromName=Recetas App
-      - BackendBaseUrl=${BackendBaseUrl}
+      - FrontendUrl=${FrontendUrl}
     ports:
       - "7253:80"
     depends_on:
