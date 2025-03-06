@@ -104,7 +104,7 @@ builder.Services.Configure<AppSettings>(builder.Configuration);
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
-            policy => policy.WithOrigins("https://recipes-app01.netlify.app/")
+            policy => policy.WithOrigins("https://recipes-app01.netlify.app")
                             .AllowAnyMethod()
                             .AllowAnyHeader());
 });

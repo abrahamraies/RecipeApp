@@ -59,7 +59,7 @@ namespace RecipeApp.API.Controllers
             user.VerificationTokenExpires = DateTime.UtcNow.AddHours(1); // Token válido por 1 hora
             await _userService.UpdateUserAsync(user);
 
-            var resetLink = $"https://recipes-app01.netlify.app//reset-password?token={token}";
+            var resetLink = $"https://recipes-app01.netlify.app/reset-password?token={token}";
             await _emailService.SendEmailAsync(user.Email, "Password Reset", $"Click here to reset your password: {resetLink}");
 
             return Ok("Password reset email sent");
