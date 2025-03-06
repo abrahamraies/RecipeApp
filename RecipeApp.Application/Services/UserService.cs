@@ -26,7 +26,7 @@ public class UserService(IUserRepository userRepository, IEmailService emailServ
         }
         await _userRepository.AddAsync(user);
 
-        var verificationLink = $"{_frontendUrl}/api/auth/verify-email?token={user.VerificationToken}";
+        var verificationLink = $"{_frontendUrl}/verify-email?token={user.VerificationToken}";
         await _emailService.SendEmailAsync(user.Email, "Verify Your Email", $"Click here to verify your email: {verificationLink}");
     }
 
