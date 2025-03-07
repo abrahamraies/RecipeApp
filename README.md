@@ -40,8 +40,8 @@ Antes de ejecutar el proyecto, asegúrate de tener instalado:
 
 1. Clonar el repositorio:
    ```sh
-   git clone https://github.com/usuario/recipe-api.git
-   cd recipe-api
+   git clone https://github.com/usuario/RecipeApp_Backend.git
+   cd RecipeApp_Backend
    ```
 
 2. Configurar las variables de entorno en `appsettings.json`:
